@@ -12,7 +12,15 @@ class VerifyOTPSerializer(serializers.Serializer):
     otp = serializers.CharField(max_length=6)
 
 
+class ClinicImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClinicImage
+        fields = "__all__"
+
+
 class ClinicSerializer(serializers.ModelSerializer):
+    images = ClinicImageSerializer(many=True)
+
     class Meta:
         model = Clinic
         fields = "__all__"
