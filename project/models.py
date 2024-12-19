@@ -1,7 +1,8 @@
 import uuid
 from datetime import timedelta
 
-from django.contrib.auth.models import AbstractBaseUser, AbstractUser, BaseUserManager, PermissionsMixin
+from django.contrib.auth.models import (AbstractBaseUser, AbstractUser,
+                                        BaseUserManager, PermissionsMixin)
 from django.db import models
 from django.utils.timezone import now
 

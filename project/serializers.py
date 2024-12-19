@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Clinic, ClinicImage
+from .models import Clinic, ClinicImage, Doctor, Service, ServiceType
 
 
 class SendOTPSerializer(serializers.Serializer):
@@ -15,4 +15,16 @@ class VerifyOTPSerializer(serializers.Serializer):
 class ClinicSerializer(serializers.ModelSerializer):
     class Meta:
         model = Clinic
+        fields = "__all__"
+
+
+class ServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Service
+        fields = "__all__"
+
+
+class DoctorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Doctor
         fields = "__all__"

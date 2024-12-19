@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import OTP, User
+from .models import OTP, Clinic, ClinicImage, Doctor, Service, ServiceType, User
 
 
 @admin.register(User)
@@ -24,3 +24,18 @@ class OTPAdmin(admin.ModelAdmin):
     list_display = ("user", "code", "created_at")
     search_fields = ("user__phone", "code")
     list_filter = ("created_at",)
+
+
+class CLinicImageInline(admin.TabularInline):
+    model = ClinicImage
+
+
+@admin.register(Clinic)
+class ClinicAdmin(admin.ModelAdmin):
+    list_display = ["name", "longitude", "latitude", "opening_time", "closing_time"]
+    inlines = [CLinicImageInline]
+
+
+@admin.register(Doctor)
+class DoctorAdmin(admin.ModelAdmin):
+    list_display = ["first_name", "last_name", "phone", "clinic"]

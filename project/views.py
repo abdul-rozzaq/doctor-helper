@@ -4,12 +4,15 @@ from datetime import timedelta
 from django.utils.timezone import now
 from rest_framework import status, viewsets
 from rest_framework.generics import GenericAPIView
+from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .models import OTP, Clinic, ClinicImage, User
+from .models import OTP, Clinic, ClinicImage, Doctor, Service, User
 from .permissons import IsAdminOrReadOnly
-from .serializers import ClinicSerializer, SendOTPSerializer, VerifyOTPSerializer
+from .serializers import (ClinicSerializer, DoctorSerializer,
+                          SendOTPSerializer, ServiceSerializer,
+                          VerifyOTPSerializer)
 from .utils import send_otp_code
 
 
@@ -63,3 +66,14 @@ class ClinicViewSet(viewsets.ModelViewSet):
     queryset = Clinic.objects.all()
     serializer_class = ClinicSerializer
     permission_classes = [IsAdminOrReadOnly]
+
+
+class ServiceViewSet(viewsets.ModelViewSet):
+    queryset = Service.objects.all()
+    serializer_class = ServiceSerializer
+
+
+class DoctorViewSet(viewsets.ModelViewSet):
+    queryset = Doctor.objects.all()
+    serializer_class = DoctorSerializer
+    parser_classes = [FormParser, MultiPartParser]
