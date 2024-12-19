@@ -1,8 +1,7 @@
 import uuid
 from datetime import timedelta
 
-from django.contrib.auth.models import (AbstractBaseUser, AbstractUser,
-                                        BaseUserManager, PermissionsMixin)
+from django.contrib.auth.models import AbstractBaseUser, AbstractUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from django.utils.timezone import now
 
@@ -62,8 +61,8 @@ class OTP(models.Model):
 class Clinic(models.Model):
     name = models.CharField(max_length=128)
 
-    longitude = models.CharField(max_length=256)
-    latitude = models.CharField(max_length=256)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
 
     opening_time = models.TimeField()
     closing_time = models.TimeField()
@@ -87,7 +86,7 @@ class Doctor(models.Model):
 
 
 class ClinicImage(models.Model):
-    clinic = models.ForeignKey(Clinic, on_delete=models.CASCADE)
+    clinic = models.ForeignKey(Clinic, on_delete=models.CASCADE, related_name="images")
     image = models.ImageField(upload_to="clinic-images/")
 
     def __str__(self) -> str:
@@ -97,9 +96,10 @@ class ClinicImage(models.Model):
 class ServiceType(models.Model):
     name = models.CharField(max_length=128)
     color = models.CharField(max_length=15)
+    icon = models.ImageField(upload_to="icons/")
 
     def __str__(self) -> str:
-        return self.color
+        return self.name
 
 
 class Service(models.Model):

@@ -32,10 +32,21 @@ class CLinicImageInline(admin.TabularInline):
 
 @admin.register(Clinic)
 class ClinicAdmin(admin.ModelAdmin):
-    list_display = ["name", "longitude", "latitude", "opening_time", "closing_time"]
+    list_display = ["pk", "name", "longitude", "latitude", "opening_time", "closing_time"]
     inlines = [CLinicImageInline]
+    list_display_links = ["name"]
 
 
 @admin.register(Doctor)
 class DoctorAdmin(admin.ModelAdmin):
-    list_display = ["first_name", "last_name", "phone", "clinic"]
+    list_display = ["pk", "first_name", "last_name", "phone", "clinic"]
+
+
+@admin.register(Service)
+class ServiceAdmin(admin.ModelAdmin):
+    list_display = ["pk", "clinic", "type"]
+
+
+@admin.register(ServiceType)
+class ServiceTypeAdmin(admin.ModelAdmin):
+    list_display = ["pk", "name", "color"]

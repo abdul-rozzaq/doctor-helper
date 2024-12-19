@@ -2,17 +2,19 @@ import random
 from datetime import timedelta
 
 from django.utils.timezone import now
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, viewsets
-from rest_framework.generics import GenericAPIView
+from rest_framework.decorators import action
+from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .models import OTP, Clinic, ClinicImage, Doctor, Service, User
+from project.filters import ClinicFilter
+
+from .models import OTP, Clinic, ClinicImage, Doctor, Service, ServiceType, User
 from .permissons import IsAdminOrReadOnly
-from .serializers import (ClinicSerializer, DoctorSerializer,
-                          SendOTPSerializer, ServiceSerializer,
-                          VerifyOTPSerializer)
+from .serializers import CalcDistanceSerializer, ClinicSerializer, DoctorSerializer, SendOTPSerializer, ServiceSerializer, ServiceTypeSerializer, VerifyOTPSerializer
 from .utils import send_otp_code
 
 
@@ -66,6 +68,8 @@ class ClinicViewSet(viewsets.ModelViewSet):
     queryset = Clinic.objects.all()
     serializer_class = ClinicSerializer
     permission_classes = [IsAdminOrReadOnly]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ClinicFilter
 
 
 class ServiceViewSet(viewsets.ModelViewSet):
@@ -77,3 +81,8 @@ class DoctorViewSet(viewsets.ModelViewSet):
     queryset = Doctor.objects.all()
     serializer_class = DoctorSerializer
     parser_classes = [FormParser, MultiPartParser]
+
+
+class ServiceTypeAPIView(ListAPIView):
+    serializer_class = ServiceTypeSerializer
+    queryset = ServiceType.objects.all()
