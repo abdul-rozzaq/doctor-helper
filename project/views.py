@@ -64,6 +64,7 @@ class VerifyOTPView(GenericAPIView):
         return Response({"refresh": str(refresh), "access": str(refresh.access_token)}, status=status.HTTP_200_OK)
 
 
+
 class ClinicViewSet(viewsets.ModelViewSet):
     queryset = Clinic.objects.all()
     serializer_class = ClinicSerializer

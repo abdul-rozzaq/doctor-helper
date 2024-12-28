@@ -30,8 +30,8 @@ class ClinicSerializer(serializers.ModelSerializer):
         model = Clinic
         fields = "__all__"
 
-    def __init__(self, instance=None, data=..., **kwargs):
-        super().__init__(instance, data, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
         self.latitude = self.context["request"].GET.get("latitude")
         self.longitude = self.context["request"].GET.get("longitude")
@@ -55,16 +55,26 @@ class ServiceTypeSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class ServiceSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Service
-        fields = "__all__"
-
-
 class DoctorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Doctor
         fields = "__all__"
+
+
+class ServiceSerializer(serializers.ModelSerializer):
+    doctors = DoctorSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Service
+        fields = "__all__"
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+
+        data["type"] = ServiceTypeSerializer(instance.type, context=self.context).data
+        data["clinic"] = ClinicSerializer(instance.clinic, context=self.context).data
+
+        return data
 
 
 class CalcDistanceSerializer(serializers.Serializer):
