@@ -63,6 +63,7 @@ class DoctorSerializer(serializers.ModelSerializer):
 
 class ServiceSerializer(serializers.ModelSerializer):
     doctors = DoctorSerializer(many=True, read_only=True)
+    rate = serializers.SerializerMethodField()
 
     class Meta:
         model = Service
@@ -75,6 +76,9 @@ class ServiceSerializer(serializers.ModelSerializer):
         data["clinic"] = ClinicSerializer(instance.clinic, context=self.context).data
 
         return data
+
+    def get_rate(self, instance):
+        return float(random.randint(20, 50) / 10)
 
 
 class CalcDistanceSerializer(serializers.Serializer):
