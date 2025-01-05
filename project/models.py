@@ -43,7 +43,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = []
 
     def __str__(self):
-        return self.phone
+        return self.get_full_name()
+
+    def get_full_name(self):
+        if self.first_name or self.last_name:
+            return f"{self.first_name} {self.last_name}"
+
+        return "-"
 
 
 class OTP(models.Model):
@@ -67,8 +73,13 @@ class Clinic(models.Model):
     opening_time = models.TimeField()
     closing_time = models.TimeField()
 
+    managers = models.ManyToManyField(User, blank=False, related_name="clinics")
+
     def __str__(self) -> str:
         return self.name
+
+    def __int__(self) -> int:
+        return self.id
 
 
 class Doctor(models.Model):
@@ -76,7 +87,7 @@ class Doctor(models.Model):
     last_name = models.CharField(max_length=128)
     image = models.ImageField(upload_to="doctor-images/")
     phone = models.CharField(max_length=15)
-    clinic = models.ForeignKey(Clinic, on_delete=models.CASCADE)
+    clinic = models.ForeignKey(Clinic, on_delete=models.CASCADE, related_name='doctors')
 
     def __str__(self) -> str:
         return super().__str__()

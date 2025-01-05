@@ -1,6 +1,7 @@
 import random
 from datetime import timedelta
 
+from django.shortcuts import get_object_or_404
 from django.utils.timezone import now
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, viewsets
@@ -64,7 +65,6 @@ class VerifyOTPView(GenericAPIView):
         return Response({"refresh": str(refresh), "access": str(refresh.access_token)}, status=status.HTTP_200_OK)
 
 
-
 class ClinicViewSet(viewsets.ModelViewSet):
     queryset = Clinic.objects.all()
     serializer_class = ClinicSerializer
@@ -77,11 +77,35 @@ class ServiceViewSet(viewsets.ModelViewSet):
     queryset = Service.objects.all()
     serializer_class = ServiceSerializer
 
+    def perform_create(self, serializer):
+        user = self.request.user
+
+        clinic = user.clinics.all().first()
+
+        return serializer.save(clinic=clinic)
+
+    @action(["POST"], detail=True, url_path="manage-doctor")
+    def manage_doctor(self, request, *args, **kwargs):
+        doctor_id = request.data.get("doctor_id", None)
+
+        doctor = get_object_or_404(Doctor, pk=doctor_id)
+        doctors = self.get_object().doctors.all()
+
+        if doctor not in doctors:
+            self.get_object().doctors.add(doctor)
+        else:
+            self.get_object().doctors.remove(doctor)
+
+        return Response(status=status.HTTP_200_OK)
+
 
 class DoctorViewSet(viewsets.ModelViewSet):
     queryset = Doctor.objects.all()
     serializer_class = DoctorSerializer
     parser_classes = [FormParser, MultiPartParser]
+
+    def filter_queryset(self, queryset):
+        return self.request.user.clinics.first().doctors.all()
 
 
 class ServiceTypeAPIView(ListAPIView):

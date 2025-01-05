@@ -33,8 +33,9 @@ class ClinicSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.latitude = self.context["request"].GET.get("latitude")
-        self.longitude = self.context["request"].GET.get("longitude")
+        if self.context.get("request"):
+            self.latitude = self.context["request"].GET.get("latitude")
+            self.longitude = self.context["request"].GET.get("longitude")
 
     def get_rate(self, instance):
         return float(random.randint(20, 50) / 10)
@@ -62,6 +63,7 @@ class DoctorSerializer(serializers.ModelSerializer):
 
 
 class ServiceSerializer(serializers.ModelSerializer):
+    clinic = serializers.IntegerField(read_only=True)
     doctors = DoctorSerializer(many=True, read_only=True)
     rate = serializers.SerializerMethodField()
 

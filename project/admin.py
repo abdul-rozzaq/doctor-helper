@@ -35,6 +35,7 @@ class ClinicAdmin(admin.ModelAdmin):
     list_display = ["pk", "name", "longitude", "latitude", "opening_time", "closing_time"]
     inlines = [CLinicImageInline]
     list_display_links = ["name"]
+    list_filter: list[str] = ["managers"]
 
 
 @admin.register(Doctor)
