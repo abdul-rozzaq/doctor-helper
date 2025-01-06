@@ -8,6 +8,7 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.parsers import FormParser, MultiPartParser
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -21,6 +22,7 @@ from .utils import send_otp_code
 
 class SendOTPView(GenericAPIView):
     serializer_class = SendOTPSerializer
+    permission_classes = [AllowAny]
 
     def post(self, request):
 
@@ -42,6 +44,7 @@ class SendOTPView(GenericAPIView):
 
 class VerifyOTPView(GenericAPIView):
     serializer_class = VerifyOTPSerializer
+    permission_classes = [AllowAny]
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
